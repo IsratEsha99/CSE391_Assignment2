@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Question 1 - Fortune Generator</title>
+<style>
+  :root{
+    --bg: #f4f7fa;
+    --card: #ffffff;
+    --ink: #1e2a3a;
+    --muted: #5b6b7f;
+    --accent: #3a6ea5;
+    --border: #d7e0e9;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+    text-align:center;
+  }
+  header a{ color: var(--accent); text-decoration:none; font-size:0.9rem; }
+  header h1{ margin: 6px 0 0; font-size: 1.4rem; }
+
+  main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 30px 16px;
+  }
+
+  /* --- Fortune widget: box + buttons beside it --- */
+  .fortune-widget{
+    display:flex;
+    align-items:center;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+
+  #fortune-box{
+    max-width: 440px;
+    min-height: 90px;
+    padding: 22px 26px;
+    background: #ffffff;
+    border: 3px solid var(--accent);
+    border-radius: 12px;
+    color: var(--ink);
+    font-size: 1.1rem;
+    font-family: 'Segoe UI', sans-serif;
+    text-align:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(30,42,58,0.08);
+  }
+
+  .btn-grid{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .style-btn{
+    width: 82px;
+    padding: 10px 6px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.12s ease;
+  }
+  .style-btn:hover{ transform: translateY(-2px); }
+  .style-btn:active{ transform: translateY(0); }
+
+  #btn-font-color{ background: #28a745; }
+  #btn-bg-color{ background: #007bff; }
+  #btn-border-color{ background: #fd7e14; }
+  #btn-font-style{ background: #ffc107; }
+
+  footer{
+    text-align:center;
+    padding: 16px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html">&larr; Back to Assignment Home</a>
+  <h1>Question 1: Fortune Generator</h1>
+</header>
+
+<main>
+  <div class="fortune-widget">
+    <div id="fortune-box">Loading your fortune...</div>
+
+    <div class="btn-grid">
+      <button id="btn-font-color" class="style-btn">Text Color</button>
+      <button id="btn-bg-color" class="style-btn">Box Color</button>
+      <button id="btn-border-color" class="style-btn">Border Color</button>
+      <button id="btn-font-style" class="style-btn">Font Style</button>
+    </div>
+  </div>
+</main>
+
+<footer>Israt Jahan Esha &bull; CSE 391 &bull; Assignment 2</footer>
+
+<script>
+  // ---------------------------------------------------------
+  // Question 1: Fortune Generator
+  // ---------------------------------------------------------
+
+  // 1) Array of at least 10 fortune messages
+  const fortunes = [
+    "A journey of a thousand miles begins with a single commit.",
+    "The bug you fear the most teaches you the most.",
+    "Good things come to those who read the documentation.",
+    "Patience is a virtue, especially while your code compiles.",
+    "You will find the missing semicolon when you least expect it.",
+    "A clear console is a sign of a clear mind.",
+    "Fortune favors the developer who tests before they push.",
+    "Great ideas often start as messy first drafts.",
+    "The best debugging tool is a good night's sleep.",
+    "Small daily improvements lead to great results over time.",
+    "Curiosity is the compiler of a creative mind.",
+    "Today is a good day to refactor something small."
+  ];
+
+  const fortuneBox = document.getElementById("fortune-box");
+
+  // 2) Randomly select and display a fortune on page load
+  function showRandomFortune(){
+    const index = Math.floor(Math.random() * fortunes.length);
+    fortuneBox.textContent = fortunes[index];
+  }
+  showRandomFortune();
+
+  // 3) Style option sets used to cycle through on each button click.
+  // Colors were chosen to keep good contrast against the light page
+  // background and against each other (text vs box vs border).
+
+  const fontColors   = ["#1e2a3a", "#c0392b", "#1f6f43", "#7d3c98", "#b9770e"];
+  const bgColors     = ["#ffffff","#ffd166","#90caf9","#81c784","#ffb74d"];
+  const borderColors  = ["#3a6ea5", "#e2725b", "#2ecc71", "#9b59b6", "#f1c40f"];
+  const fontStyles = [
+    { size: "1.1rem",  family: "'Segoe UI', sans-serif" },
+    { size: "1.3rem",  family: "Georgia, 'Times New Roman', serif" },
+    { size: "1rem",    family: "'Courier New', monospace" },
+    { size: "1.25rem", family: "'Trebuchet MS', sans-serif" },
+    { size: "1.15rem", family: "'Comic Sans MS', cursive" }
+  ];
+
+  // Track which option in each array is currently active
+  let fontColorIdx = 0;
+  let bgColorIdx = 0;
+  let borderColorIdx = 0;
+  let fontStyleIdx = 0;
+
+  document.getElementById("btn-font-color").addEventListener("click", () => {
+    fontColorIdx = (fontColorIdx + 1) % fontColors.length;
+    fortuneBox.style.color = fontColors[fontColorIdx];
+  });
+
+  document.getElementById("btn-bg-color").addEventListener("click", () => {
+    bgColorIdx = (bgColorIdx + 1) % bgColors.length;
+    fortuneBox.style.backgroundColor = bgColors[bgColorIdx];
+  });
+
+  document.getElementById("btn-border-color").addEventListener("click", () => {
+    borderColorIdx = (borderColorIdx + 1) % borderColors.length;
+    fortuneBox.style.borderColor = borderColors[borderColorIdx];
+  });
+
+  document.getElementById("btn-font-style").addEventListener("click", () => {
+    fontStyleIdx = (fontStyleIdx + 1) % fontStyles.length;
+    fortuneBox.style.fontSize = fontStyles[fontStyleIdx].size;
+    fortuneBox.style.fontFamily = fontStyles[fontStyleIdx].family;
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Question 2 - Stopwatch</title>
+<style>
+  :root{
+    --bg: #f4f7fa;
+    --card: #ffffff;
+    --ink: #1e2a3a;
+    --muted: #5b6b7f;
+    --accent: #3a6ea5;
+    --good: #2ecc71;
+    --stop: #e74c3c;
+    --reset: #7f8c8d;
+    --border: #d7e0e9;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+    text-align:center;
+  }
+  header a{ color: var(--accent); text-decoration:none; font-size:0.9rem; }
+  header h1{ margin: 6px 0 0; font-size: 1.4rem; }
+
+  main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 30px 16px;
+  }
+
+  .stopwatch-card{
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px 40px;
+    text-align:center;
+    box-shadow: 0 6px 20px rgba(30,42,58,0.08);
+    width: 100%;
+    max-width: 360px;
+  }
+
+  #time-display{
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  #status-text{
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    min-height: 1.2em;
+  }
+
+  .progress-track{
+    background: #e6ecf2;
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  #progress-fill{
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+
+  .controls{
+    display:flex;
+    gap: 10px;
+    justify-content:center;
+  }
+  .controls button{
+    flex:1;
+    padding: 12px 0;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.12s ease;
+  }
+  .controls button:hover:not(:disabled){ transform: translateY(-2px); }
+  .controls button:disabled{ opacity: 0.5; cursor: not-allowed; }
+
+  #start-btn{ background: var(--good); }
+  #stop-btn{ background: var(--stop); }
+  #reset-btn{ background: var(--reset); }
+
+  footer{
+    text-align:center;
+    padding: 16px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html">&larr; Back to Assignment Home</a>
+  <h1>Question 2: Stopwatch</h1>
+</header>
+
+<main>
+  <div class="stopwatch-card">
+    <div id="time-display">0s</div>
+    <div id="status-text">Ready to start</div>
+
+    <div class="progress-track">
+      <div id="progress-fill"></div>
+    </div>
+
+    <div class="controls">
+      <button id="start-btn">Start</button>
+      <button id="stop-btn" disabled>Stop</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+  </div>
+</main>
+
+<footer>Israt Jahan Esha &bull; CSE 391 &bull; Assignment 2</footer>
+
+<script>
+  // ---------------------------------------------------------
+  // Question 2: Stopwatch
+  // Counts in steps of 3 seconds (3, 6, 9, ... 30) and stops
+  // automatically at 30 seconds unless reset first.
+  // ---------------------------------------------------------
+
+  const STEP = 3;        // seconds added per tick
+  const LIMIT = 30;       // auto-stop limit in seconds
+  const TICK_MS = 3000;   // real time between ticks (3 real seconds)
+
+  const timeDisplay = document.getElementById("time-display");
+  const statusText = document.getElementById("status-text");
+  const progressFill = document.getElementById("progress-fill");
+  const startBtn = document.getElementById("start-btn");
+  const stopBtn = document.getElementById("stop-btn");
+  const resetBtn = document.getElementById("reset-btn");
+
+  let elapsed = 0;      // current recorded time, always a multiple of STEP
+  let intervalId = null;
+  let isRunning = false;
+
+  function updateDisplay(){
+    timeDisplay.textContent = elapsed + "s";
+    progressFill.style.width = Math.min((elapsed / LIMIT) * 100, 100) + "%";
+  }
+
+  function updateButtons(){
+    const finished = elapsed >= LIMIT;
+    startBtn.disabled = isRunning || finished;
+    stopBtn.disabled = !isRunning;
+
+    if (finished) {
+      statusText.textContent = "Finished! Reached 30 seconds.";
+    } else if (isRunning) {
+      statusText.textContent = "Running...";
+    } else if (elapsed > 0) {
+      statusText.textContent = "Paused at " + elapsed + "s";
+    } else {
+      statusText.textContent = "Ready to start";
+    }
+  }
+
+  function tick(){
+    elapsed += STEP;
+    updateDisplay();
+
+    if (elapsed >= LIMIT) {
+      clearInterval(intervalId);
+      intervalId = null;
+      isRunning = false;
+    }
+    updateButtons();
+  }
+
+  startBtn.addEventListener("click", () => {
+    if (isRunning || elapsed >= LIMIT) return;
+    isRunning = true;
+    intervalId = setInterval(tick, TICK_MS);
+    updateButtons();
+  });
+
+  stopBtn.addEventListener("click", () => {
+    if (!isRunning) return;
+    clearInterval(intervalId);
+    intervalId = null;
+    isRunning = false;
+    updateButtons();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    clearInterval(intervalId);
+    intervalId = null;
+    isRunning = false;
+    elapsed = 0;
+    updateDisplay();
+    updateButtons();
+  });
+
+  // Initialize display on page load
+  updateDisplay();
+  updateButtons();
+</script>
+
+</body>
+</html>

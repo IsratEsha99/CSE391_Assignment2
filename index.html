@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CSE 391 - Assignment 2</title>
+<style>
+  :root{
+    --bg: #f4f7fa;
+    --card: #ffffff;
+    --ink: #1e2a3a;
+    --muted: #5b6b7f;
+    --accent: #3a6ea5;
+    --accent-2: #e2725b;
+    --border: #d7e0e9;
+  }
+  * { box-sizing: border-box; }
+  body{
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  header{
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 20px 22px;
+    text-align:center;
+  }
+  header h1{
+    margin:0 0 4px;
+    font-size: 1.7rem;
+    letter-spacing: 0.5px;
+  }
+  header p{ margin:0; color: var(--muted); font-size:0.95rem; }
+
+  main{
+    flex:1;
+    max-width: 640px;
+    width:100%;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  main > p.lead{
+    text-align:center;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .task-grid{
+    display:grid;
+    gap: 16px;
+  }
+  .task-card{
+    display:block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--accent);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration:none;
+    color: var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .task-card:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30,42,58,0.1);
+  }
+  .task-card .num{
+    display:inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .task-card h2{
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+  }
+  .task-card span.marks{
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer{
+    text-align:center;
+    padding: 18px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CSE 391: Programming for the Internet</h1>
+  <p>Assignment 2 &mdash; JavaScript Programming</p>
+</header>
+
+<main>
+  <p class="lead">Select a task below to view it in action.</p>
+  <div class="task-grid">
+    <a class="task-card" href="fortune.html">
+      <span class="num">QUESTION 1</span>
+      <h2>Fortune Generator</h2>
+      <span class="marks">25 marks</span>
+    </a>
+    <a class="task-card" href="stopwatch.html">
+      <span class="num">QUESTION 2</span>
+      <h2>Stopwatch</h2>
+      <span class="marks">35 marks</span>
+    </a>
+    <a class="task-card" href="todo.html">
+      <span class="num">QUESTION 3</span>
+      <h2>To-Do List</h2>
+      <span class="marks">40 marks</span>
+    </a>
+  </div>
+</main>
+
+<footer>Israt Jahan Esha &bull; CSE 391 &bull; Assignment 2</footer>
+
+</body>
+</html>
